@@ -15,10 +15,8 @@ public class FilmeReal {
     private Long Id;
     private boolean isAlugado;
 
-//    @Column(columnDefinition = "UUID default RANDOM_UUID()")
-//    private UUID uuid;
-//    private String nome;
-//    private String genero;
-//    private String descricao;
+  @Column(columnDefinition = "UUID default RANDOM_UUID()")
+  private UUID uuid;
+
 
 }
