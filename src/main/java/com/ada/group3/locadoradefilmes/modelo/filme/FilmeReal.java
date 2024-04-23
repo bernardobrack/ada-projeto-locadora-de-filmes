@@ -1,6 +1,7 @@
 package com.ada.group3.locadoradefilmes.modelo.filme;
 
-import com.ada.group3.locadoradefilmes.modelo.aluguel.AluguelClass;
+import com.ada.group3.locadoradefilmes.modelo.aluguel.Aluguel;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,7 +32,7 @@ public class FilmeReal {
   @OneToMany(
           mappedBy = "filme"
   )
-  private List<AluguelClass> alugueis;
+  private List<Aluguel> alugueis;
 
 
 }

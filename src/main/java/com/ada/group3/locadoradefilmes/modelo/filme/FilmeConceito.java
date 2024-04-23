@@ -10,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+
 public class FilmeConceito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
