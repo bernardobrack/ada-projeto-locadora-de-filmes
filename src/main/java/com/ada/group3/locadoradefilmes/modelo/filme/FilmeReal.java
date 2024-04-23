@@ -9,14 +9,16 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-public class FilmeConceito {
+public class FilmeReal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    @Column(columnDefinition = "UUID default RANDOM_UUID()")
-    private UUID uuid;
-    private String nome;
-    private String genero;
-    private String descricao;
+    private boolean isAlugado;
+
+//    @Column(columnDefinition = "UUID default RANDOM_UUID()")
+//    private UUID uuid;
+//    private String nome;
+//    private String genero;
+//    private String descricao;
 
 }
