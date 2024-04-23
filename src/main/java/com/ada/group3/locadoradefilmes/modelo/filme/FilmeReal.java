@@ -17,8 +17,8 @@ public class FilmeReal {
     private Long Id;
     private boolean isAlugado;
 
-  @Column(columnDefinition = "UUID default RANDOM_UUID()")
-  private UUID uuid;
+    @Column(columnDefinition = "UUID default RANDOM_UUID()")
+     private UUID uuid;
 
   @ManyToOne
   @JoinColumn(
