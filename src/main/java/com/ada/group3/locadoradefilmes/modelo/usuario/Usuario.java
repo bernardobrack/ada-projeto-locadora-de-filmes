@@ -1,23 +1,27 @@
-package com.ada.group3.locadoradefilmes.modelo.aluguel;
+package com.ada.group3.locadoradefilmes.modelo.usuario;
 
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-public class AluguelClass {
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    //private Long idUser; Alterar para Join Collumn
     @Column(columnDefinition = "UUID default RANDOM_UUID()")
     private UUID uuid;
-    private LocalDateTime Aluguel;
-    private LocalDateTime Devolução;
+
+    private String nome;
+    private String CPF;
+    private String senha;
+    private String email;
+
+    @Column(columnDefinition = "boolean default false")
+    private Boolean temAtraso;
 
 }
