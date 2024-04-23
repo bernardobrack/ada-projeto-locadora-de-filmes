@@ -15,18 +15,18 @@ public class UsuarioController {
     private final UsuarioService service;
 
     @GetMapping
-    public List<Usuario> listarTodos() {
+    public List<UsuarioDto> listarTodos() {
         return this.service.listarTodos();
     }
 
     @GetMapping("/{login}")
-    public Usuario buscarPorLogin(@PathVariable String login) {
+    public UsuarioDto buscarPorLogin(@PathVariable String login) {
         return this.service.buscarPorLogin(login);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Usuario adicionarUsuario(@RequestBody Usuario usuario) {
+    public UsuarioDto adicionarUsuario(@RequestBody UsuarioDto usuario) {
         return this.service.adicionarUsuario(usuario);
     }
 
