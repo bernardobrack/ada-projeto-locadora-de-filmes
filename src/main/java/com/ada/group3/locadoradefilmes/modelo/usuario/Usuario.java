@@ -1,6 +1,6 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario;
 
-import com.ada.group3.locadoradefilmes.modelo.aluguel.AluguelClass;
+import com.ada.group3.locadoradefilmes.modelo.aluguel.Aluguel;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +29,6 @@ public class Usuario {
     @OneToMany(
             mappedBy = "usuario"
     )
-    private List<AluguelClass> alugueis;
+    private List<Aluguel> alugueis;
 
 }
