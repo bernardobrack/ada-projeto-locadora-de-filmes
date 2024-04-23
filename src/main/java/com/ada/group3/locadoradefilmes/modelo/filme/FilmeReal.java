@@ -1,8 +1,10 @@
 package com.ada.group3.locadoradefilmes.modelo.filme;
 
+import com.ada.group3.locadoradefilmes.modelo.aluguel.AluguelClass;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +19,19 @@ public class FilmeReal {
 
   @Column(columnDefinition = "UUID default RANDOM_UUID()")
   private UUID uuid;
+
+  @ManyToOne
+  @JoinColumn(
+          name = "filme_conceito_id",
+          nullable = false
+
+  )
+  private FilmeConceito filmeConceito;
+
+  @OneToMany(
+          mappedBy = "filme"
+  )
+  private List<AluguelClass> alugueis;
 
 
 }

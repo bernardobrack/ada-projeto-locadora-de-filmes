@@ -1,8 +1,10 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario;
 
+import com.ada.group3.locadoradefilmes.modelo.aluguel.AluguelClass;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,5 +25,10 @@ public class Usuario {
 
     @Column(columnDefinition = "boolean default false")
     private Boolean temAtraso;
+
+    @OneToMany(
+            mappedBy = "usuario"
+    )
+    private List<AluguelClass> alugueis;
 
 }

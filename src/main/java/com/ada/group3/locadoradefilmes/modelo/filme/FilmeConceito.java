@@ -3,6 +3,7 @@ package com.ada.group3.locadoradefilmes.modelo.filme;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,4 +20,8 @@ public class FilmeConceito {
     private String genero;
     private String descricao;
 
+    @OneToMany(
+            mappedBy = "filmeConceito"
+    )
+    private List<FilmeReal> filmesReais;
 }
