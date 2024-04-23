@@ -15,13 +15,15 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    @Column(columnDefinition = "UUID default RANDOM_UUID()")
-    private UUID uuid;
-
     private String nome;
-    private String CPF;
-    private String senha;
+    private String sobrenome;
+    private String cpf;
     private String email;
+    @Column(unique = true)
+    private String login;
+    private String senha;
+    @Column(columnDefinition = "boolean default true")
+    private Boolean ativo;
 
     @Column(columnDefinition = "boolean default false")
     private Boolean temAtraso;
