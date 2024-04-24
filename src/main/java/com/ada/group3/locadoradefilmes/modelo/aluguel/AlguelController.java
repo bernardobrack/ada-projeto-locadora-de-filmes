@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("${api.mapping}/aluguel")
+@RequestMapping("${api.mapping}/alugueis")
 public class AlguelController {
 
     private AluguelService aluguelService;
@@ -36,5 +36,6 @@ public class AlguelController {
                         aluguel.filmeUuid()
                 )
         );
+        return null;
     }
 }
