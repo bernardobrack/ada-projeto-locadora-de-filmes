@@ -19,8 +19,8 @@ public class UsuarioController {
         return this.service.listarTodos();
     }
 
-    @GetMapping("/{login}")
-    public UsuarioDto buscarPorLogin(@PathVariable String login) {
+    @GetMapping(value = "busca", params = "login")
+    public UsuarioDto buscarPorLogin(@RequestParam String login) {
         return this.service.buscarPorLogin(login);
     }
 
@@ -28,6 +28,11 @@ public class UsuarioController {
     @ResponseStatus(HttpStatus.CREATED)
     public UsuarioDto adicionarUsuario(@RequestBody UsuarioDto usuario) {
         return this.service.adicionarUsuario(usuario);
+    }
+    @PutMapping("/{login}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizar(@PathVariable String login,@RequestBody UsuarioDto usuarioAtualizado){
+        this.service.atualizar(login,usuarioAtualizado);
     }
 
     @Transactional

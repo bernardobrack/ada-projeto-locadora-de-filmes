@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Component
@@ -34,6 +35,13 @@ public class UsuarioService {
         Usuario usuario = modelMapper.map(usuarioDto, Usuario.class);
         Usuario savedUsuario = this.usuarioRepository.save(usuario);
         return modelMapper.map(savedUsuario, UsuarioDto.class);
+    }
+    public void atualizar(String login, UsuarioDto usuarioAtualizado){
+        Usuario usuarioFound = this.usuarioRepository.findByLogin(login).orElseThrow(NaoEncontradoException::new);
+        Usuario usuario = this.modelMapper.map(usuarioAtualizado,Usuario.class);
+        usuario.setId(usuarioFound.getId());
+        this.usuarioRepository.save(usuario);
+
     }
     @Transactional
     public void excluir(String login) {
