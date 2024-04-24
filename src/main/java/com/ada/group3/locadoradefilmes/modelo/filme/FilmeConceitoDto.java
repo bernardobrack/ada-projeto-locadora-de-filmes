@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.UUID;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class FilmeConceitoDto {
 
     private Long id;
