@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.mapping}/usuarios")
@@ -26,13 +27,23 @@ public class UsuarioController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UsuarioDto adicionarUsuario(@RequestBody UsuarioDto usuario) {
-        return this.service.adicionarUsuario(usuario);
+    public UsuarioDto adicionarUsuario(@RequestBody UsuarioRequest usuarioRequest) {
+        return this.service.adicionarUsuario(usuarioRequest);
     }
     @PutMapping("/{login}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizar(@PathVariable String login,@RequestBody UsuarioDto usuarioAtualizado){
         this.service.atualizar(login,usuarioAtualizado);
+    }
+    @PatchMapping("/{login}/atraso/marcar")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void marcarAtraso(@PathVariable String login) {
+        this.service.marcarAtraso(login);
+    }
+    @PatchMapping("/{login}/atraso/desmarcar")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void desmarcarAtraso(@PathVariable String login) {
+        this.service.desmarcarAtraso(login);
     }
 
     @Transactional

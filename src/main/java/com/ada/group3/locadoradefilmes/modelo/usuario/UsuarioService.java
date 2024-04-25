@@ -31,8 +31,8 @@ public class UsuarioService {
                 .orElseThrow(NaoEncontradoException::new);
     }
 
-    public UsuarioDto adicionarUsuario(UsuarioDto usuarioDto) {
-        Usuario usuario = modelMapper.map(usuarioDto, Usuario.class);
+    public UsuarioDto adicionarUsuario(UsuarioRequest usuarioRequest) {
+        Usuario usuario = modelMapper.map(usuarioRequest, Usuario.class);
         Usuario savedUsuario = this.usuarioRepository.save(usuario);
         return modelMapper.map(savedUsuario, UsuarioDto.class);
     }
@@ -42,6 +42,12 @@ public class UsuarioService {
         usuario.setId(usuarioFound.getId());
         this.usuarioRepository.save(usuario);
 
+    }
+    public void marcarAtraso(String login){
+            this.usuarioRepository.marcarAtraso(login);
+    }
+    public void desmarcarAtraso(String login){
+        this.usuarioRepository.desmarcarAtraso(login);
     }
     @Transactional
     public void excluir(String login) {
