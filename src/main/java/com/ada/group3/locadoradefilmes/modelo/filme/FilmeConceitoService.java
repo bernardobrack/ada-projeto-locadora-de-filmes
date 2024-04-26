@@ -11,30 +11,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilmeConceitoService {
 
-    private final com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoRepository filmeConceitoRepository;
+    private final FilmeConceitoRepository filmeConceitoRepository;
     private final ModelMapper modelMapper;
 
-    public List<com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoDto> listarTodos() {
+    public List<FilmeConceitoDto> listarTodos() {
         return this.filmeConceitoRepository.findAll()
                 .stream()
-                .map(filmeConceito -> modelMapper.map(filmeConceito, com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoDto.class))
+                .map(filmeConceito -> modelMapper.map(filmeConceito, FilmeConceitoDto.class))
                 .toList();
     }
 
 //TODO confirmar exceção
-    public com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoDto buscarPorNome(String nome) {
+    public FilmeConceitoDto buscarPorNome(String nome) {
         return this.filmeConceitoRepository.findByNome(nome)
-                .map(filme -> modelMapper.map(filme, com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoDto.class))
+                .map(filme -> modelMapper.map(filme, FilmeConceitoDto.class))
                 .orElseThrow(NaoEncontradoException::new);
     }
 
-    public com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoDto adicionarFilmeConceito(com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoDto filmeConceitoDto) {
-        FilmeConceito filmeConceito = modelMapper.map(filmeConceitoDto, FilmeConceito.class);
+    public FilmeConceitoDto adicionarFilmeConceito(com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoRequest filmeConceitoRequest) {
+        FilmeConceito filmeConceito = modelMapper.map(filmeConceitoRequest, FilmeConceito.class);
         FilmeConceito savedFilmeConceito = this.filmeConceitoRepository.save(filmeConceito);
         return modelMapper.map(savedFilmeConceito, com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoDto.class);
     }
 
-    public void atualizar(String nome, com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoDto filmeConceitoAtualizado) {
+    public void atualizar(String nome, FilmeConceitoDto filmeConceitoAtualizado) {
         FilmeConceito filmeConceitoFound = this.filmeConceitoRepository.findByNome(nome).orElseThrow(NaoEncontradoException::new);
         FilmeConceito filmeConceitoEntity = modelMapper.map(filmeConceitoAtualizado, FilmeConceito.class);
         filmeConceitoEntity.setId(filmeConceitoFound.getId());
