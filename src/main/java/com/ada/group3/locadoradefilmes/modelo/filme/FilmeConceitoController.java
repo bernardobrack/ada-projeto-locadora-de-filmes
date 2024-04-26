@@ -25,8 +25,8 @@ public class FilmeConceitoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FilmeConceitoDto adicionarFilmeConceito(@RequestBody FilmeConceitoDto filmeConceitoDto) {
-        return this.service.adicionarFilmeConceito(filmeConceitoDto);
+    public FilmeConceitoDto adicionarFilmeConceito(@RequestBody FilmeConceitoRequest filmeConceitoRequest) {
+        return this.service.adicionarFilmeConceito(filmeConceitoRequest);
     }
 
     @PutMapping("/{nome}")
