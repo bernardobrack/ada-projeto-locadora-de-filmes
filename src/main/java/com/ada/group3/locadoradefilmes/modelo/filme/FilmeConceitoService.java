@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -21,9 +22,8 @@ public class FilmeConceitoService {
                 .toList();
     }
 
-//TODO confirmar exceção
-    public FilmeConceitoDto buscarPorNome(String nome) {
-        return this.filmeConceitoRepository.findByNome(nome)
+    public FilmeConceitoDto buscarPorUUID(UUID uuid) {
+        return this.filmeConceitoRepository.findById(uuid)
                 .map(filme -> modelMapper.map(filme, FilmeConceitoDto.class))
                 .orElseThrow(NaoEncontradoException::new);
     }
@@ -31,18 +31,18 @@ public class FilmeConceitoService {
     public FilmeConceitoDto adicionarFilmeConceito(FilmeConceitoRequest filmeConceitoRequest) {
         FilmeConceito filmeConceito = modelMapper.map(filmeConceitoRequest, FilmeConceito.class);
         FilmeConceito savedFilmeConceito = this.filmeConceitoRepository.save(filmeConceito);
-        return modelMapper.map(savedFilmeConceito, com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoDto.class);
+        return modelMapper.map(savedFilmeConceito, FilmeConceitoDto.class);
     }
 
-    public void atualizar(String nome, FilmeConceitoDto filmeConceitoAtualizado) {
-        FilmeConceito filmeConceitoFound = this.filmeConceitoRepository.findByNome(nome).orElseThrow(NaoEncontradoException::new);
+    public void atualizar(UUID uuid, FilmeConceitoDto filmeConceitoAtualizado) {
+        FilmeConceito filmeConceitoFound = this.filmeConceitoRepository.findById(uuid).orElseThrow(NaoEncontradoException::new);
         FilmeConceito filmeConceitoEntity = modelMapper.map(filmeConceitoAtualizado, FilmeConceito.class);
         filmeConceitoEntity.setId(filmeConceitoFound.getId());
         this.filmeConceitoRepository.save(filmeConceitoEntity);
     }
 
     @Transactional
-    public void excluir(String nome) {
-        this.filmeConceitoRepository.deleteByNome(nome);
+    public void excluir(UUID uuid) {
+        this.filmeConceitoRepository.deleteById(uuid);
     }
 }

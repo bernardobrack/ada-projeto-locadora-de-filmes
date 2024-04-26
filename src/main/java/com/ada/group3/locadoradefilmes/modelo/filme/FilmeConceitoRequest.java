@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @Setter
 @ToString
 public class FilmeConceitoRequest {
-    //Incluir número
+
     @Pattern(regexp = "^[a-zA-Z0-9 ]+${1,100}",message = "Nome deve conter letras de A ate Z e/ou números entre 1 e 100 caracteres")
     private String nome;
     @Pattern(regexp = "^[a-zA-Z0-9 ]+${1,100}",message = "Nome deve conter letras de A ate Z e/ou números entre 1 e 100 caracteres")
