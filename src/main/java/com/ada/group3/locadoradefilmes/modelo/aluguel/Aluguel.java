@@ -17,7 +17,6 @@ public class Aluguel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    //private Long idUser; Alterar para Join Collumn
     @Column(columnDefinition = "UUID default RANDOM_UUID()")
     private UUID uuid;
     private LocalDateTime horarioAluguel;

@@ -15,7 +15,7 @@ public class FilmeConceito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    @Column(columnDefinition = "UUID default RANDOM_UUID()")
+    @Column(columnDefinition = "uuid default random_uuid()", nullable = false)
     private UUID uuid;
     private String nome;
     private String genero;

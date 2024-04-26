@@ -31,6 +31,7 @@ public class FilmeConceitoService {
 
     public FilmeConceitoDto adicionarFilmeConceito(FilmeConceitoRequest filmeConceitoRequest) {
         FilmeConceito filmeConceito = modelMapper.map(filmeConceitoRequest, FilmeConceito.class);
+        filmeConceito.setUuid(UUID.randomUUID());
         FilmeConceito savedFilmeConceito = this.filmeConceitoRepository.save(filmeConceito);
         return modelMapper.map(savedFilmeConceito, FilmeConceitoDto.class);
     }
