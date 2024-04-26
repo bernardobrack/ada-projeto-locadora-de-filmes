@@ -21,9 +21,4 @@ public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
     @Query("update Usuario set temAtraso = false where login = :login")
     void desmarcarAtraso(@Param("login")String login);
 
-    void deleteByLogin(String login);
-
-
-
-
 }

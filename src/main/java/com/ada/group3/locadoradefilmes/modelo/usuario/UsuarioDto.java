@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class UsuarioDto implements Serializable {
 
     private String nome;
-    private String sobrenome;
+    private String ultimoNome;
     private String cpf;
     private String email;
     private String login;

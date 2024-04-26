@@ -28,7 +28,7 @@ public class FilmeConceitoService {
                 .orElseThrow(NaoEncontradoException::new);
     }
 
-    public FilmeConceitoDto adicionarFilmeConceito(com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoRequest filmeConceitoRequest) {
+    public FilmeConceitoDto adicionarFilmeConceito(FilmeConceitoRequest filmeConceitoRequest) {
         FilmeConceito filmeConceito = modelMapper.map(filmeConceitoRequest, FilmeConceito.class);
         FilmeConceito savedFilmeConceito = this.filmeConceitoRepository.save(filmeConceito);
         return modelMapper.map(savedFilmeConceito, com.ada.group3.locadoradefilmes.modelo.filme.FilmeConceitoDto.class);

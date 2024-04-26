@@ -33,6 +33,8 @@ public class UsuarioService {
 
     public UsuarioDto adicionarUsuario(UsuarioRequest usuarioRequest) {
         Usuario usuario = modelMapper.map(usuarioRequest, Usuario.class);
+        usuario.setAtivo(true);
+        usuario.setTemAtraso(false);
         Usuario savedUsuario = this.usuarioRepository.save(usuario);
         return modelMapper.map(savedUsuario, UsuarioDto.class);
     }
@@ -43,16 +45,20 @@ public class UsuarioService {
         this.usuarioRepository.save(usuario);
 
     }
+    @Transactional
     public void marcarAtraso(String login){
             this.usuarioRepository.marcarAtraso(login);
     }
+    @Transactional
     public void desmarcarAtraso(String login){
         this.usuarioRepository.desmarcarAtraso(login);
     }
-    @Transactional
-    public void excluir(String login) {
-        this.usuarioRepository.deleteByLogin(login);
+    public void desativarUsuario(String login){
+       Usuario usuario = this.usuarioRepository.findByLogin(login).orElseThrow(NaoEncontradoException::new);
+       usuario.setAtivo(false);
+       this.usuarioRepository.save(usuario);
     }
+
 
 
 }

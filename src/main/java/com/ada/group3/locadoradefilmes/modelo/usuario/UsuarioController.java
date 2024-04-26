@@ -35,21 +35,23 @@ public class UsuarioController {
     public void atualizar(@PathVariable String login,@RequestBody UsuarioDto usuarioAtualizado){
         this.service.atualizar(login,usuarioAtualizado);
     }
+    @Transactional
     @PatchMapping("/{login}/atraso/marcar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void marcarAtraso(@PathVariable String login) {
         this.service.marcarAtraso(login);
     }
+    @Transactional
     @PatchMapping("/{login}/atraso/desmarcar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desmarcarAtraso(@PathVariable String login) {
+    public void desmarcarAtraso(@PathVariable String login)  {
         this.service.desmarcarAtraso(login);
     }
 
-    @Transactional
+
     @DeleteMapping("/{login}")
-    public void excluir(@PathVariable String login) {
-        this.service.excluir(login);
+    public void desativarUsuario(@PathVariable String login){
+        this.service.desativarUsuario(login);
     }
 
 }
