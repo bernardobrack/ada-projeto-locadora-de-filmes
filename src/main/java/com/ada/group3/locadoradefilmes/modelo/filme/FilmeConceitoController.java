@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.mapping}/filmes-conceito")
@@ -18,9 +19,9 @@ public class FilmeConceitoController {
         return this.service.listarTodos();
     }
 
-    @GetMapping(value = "busca", params = "nome")
-    public FilmeConceitoDto buscarPorNome(@RequestParam String nome) {
-        return this.service.buscarPorNome(nome);
+    @GetMapping(value = "busca", params = "uuid")
+    public FilmeConceitoDto buscarPorUUID(@RequestParam UUID uuid) {
+        return this.service.buscarPorUUID(uuid);
     }
 
     @PostMapping
@@ -29,15 +30,15 @@ public class FilmeConceitoController {
         return this.service.adicionarFilmeConceito(filmeConceitoRequest);
     }
 
-    @PutMapping("/{nome}")
+    @PutMapping("/{uuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void atualizar(@PathVariable String nome, @RequestBody FilmeConceitoDto filmeConceitoAtualizado) {
-        this.service.atualizar(nome, filmeConceitoAtualizado);
+    public void atualizar(@PathVariable UUID uuid, @RequestBody FilmeConceitoDto filmeConceitoAtualizado) {
+        this.service.atualizar(uuid, filmeConceitoAtualizado);
     }
 
     @Transactional
-    @DeleteMapping("/{nome}")
-    public void excluir(@PathVariable String nome) {
-        this.service.excluir(nome);
+    @DeleteMapping("/{uuid}")
+    public void excluir(@PathVariable UUID uuid) {
+        this.service.excluir(uuid);
     }
 }
