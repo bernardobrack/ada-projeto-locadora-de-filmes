@@ -16,7 +16,7 @@ public class AluguelDTO {
     private UUID uuid;
     private LocalDateTime horarioAluguel;
     private LocalDateTime horarioDevolucao;
-    private Usuario usuario;
-    private FilmeReal filme;
+    private String usuarioLogin;
+    private UUID filmeUuid;
 
 }

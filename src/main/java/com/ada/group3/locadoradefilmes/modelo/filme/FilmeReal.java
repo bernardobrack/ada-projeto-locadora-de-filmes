@@ -13,12 +13,15 @@ import java.util.UUID;
 @Setter
 @Entity
 public class FilmeReal {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+    @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isAlugado;
 
-    @Column(columnDefinition = "UUID default RANDOM_UUID()")
+    @Column(columnDefinition = "uuid default random_uuid()")
      private UUID uuid;
 
   @ManyToOne
