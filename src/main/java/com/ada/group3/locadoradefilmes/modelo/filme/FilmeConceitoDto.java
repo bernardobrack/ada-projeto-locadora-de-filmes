@@ -14,5 +14,4 @@ public class FilmeConceitoDto {
     private String nome;
     private String genero;
     private String descricao;
-    private List<FilmeRealDto> filmesReais;
 }
