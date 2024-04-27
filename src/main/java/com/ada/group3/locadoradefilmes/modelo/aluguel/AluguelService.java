@@ -31,13 +31,13 @@ public class AluguelService {
                         entity.getUuid(),
                         entity.getHorarioAluguel(),
                         entity.getHorarioDevolucao(),
-                        entity.getUsuario().getLogin(),
+                        entity.getUsuario().getUsername(),
                         entity.getFilme().getUuid()
                 )).toList();
     }
 
     public AluguelDTO save(AluguelDTO aluguelDTO) {
-        Optional<Usuario> usuarioOptional = usuarioRepository.findByLogin(aluguelDTO.getUsuarioLogin());
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByUsername(aluguelDTO.getUsuarioLogin());
         Usuario usuario = usuarioOptional.orElseThrow(UsuarioNaoEncontradoException::new);
         //TODO: mudar excecao abaixo
         FilmeReal filmeReal = filmeRealRepository.findByUuid(aluguelDTO.getFilmeUuid()).orElseThrow(FilmeConceitoNaoEncontradoException::new);

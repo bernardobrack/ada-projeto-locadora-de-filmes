@@ -11,12 +11,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UsuarioDto implements Serializable {
 
-    private String nome;
-    private String ultimoNome;
+    private String name;
+    private String lastName;
     private String cpf;
     private String email;
-    private String login;
-    private String senha;
-    private Boolean ativo;
-    private Boolean temAtraso;
+    private String username;
+    private String password;
+    private Role role;
+    private Boolean active;
+    private Boolean isLate;
 }

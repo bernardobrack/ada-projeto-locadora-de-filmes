@@ -1,6 +1,7 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +23,12 @@ public class UsuarioController {
 
     @GetMapping(value = "busca", params = "login")
     public UsuarioDto buscarPorLogin(@RequestParam String login) {
-        return this.service.buscarPorLogin(login);
+        return this.service.buscarPorUsername(login);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UsuarioDto adicionarUsuario(@RequestBody UsuarioRequest usuarioRequest) {
+    public UsuarioDto adicionarUsuario(@Valid @RequestBody UsuarioRequest usuarioRequest) {
         return this.service.adicionarUsuario(usuarioRequest);
     }
 

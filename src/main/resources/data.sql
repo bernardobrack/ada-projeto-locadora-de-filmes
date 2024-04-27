@@ -1,0 +1,2 @@
+INSERT INTO usuario (name, last_name, cpf, email, username, password, role)
+VALUES ('kauan', 'jasiskis', '123.456.789-00', 'jasiskiskauan@gmail.com', 'kauan.123', 'St@rG@z3r^#', 'ADMIN');--$2a$12$Zrbkl362qtY.1u06sEh.I.OfhWtc5h9e/C56gl2Q2stZl2suG3rZ6

@@ -12,13 +12,13 @@ import java.util.UUID;
 
 public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
 
-    Optional<Usuario> findByLogin(String Login);
+    Optional<Usuario> findByUsername(String username);
 
     @Modifying
-    @Query("update Usuario set temAtraso = true where login = :login")
-    void marcarAtraso(@Param("login")String login);
+    @Query("update Usuario set isLate = true where username = :username")
+    void marcarAtraso(@Param("username")String username);
     @Modifying
-    @Query("update Usuario set temAtraso = false where login = :login")
-    void desmarcarAtraso(@Param("login")String login);
+    @Query("update Usuario set isLate = false where username = :username")
+    void desmarcarAtraso(@Param("username")String username);
 
 }
