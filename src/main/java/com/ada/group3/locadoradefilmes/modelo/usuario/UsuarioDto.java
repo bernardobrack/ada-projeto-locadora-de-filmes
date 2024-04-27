@@ -17,7 +17,7 @@ public class UsuarioDto implements Serializable {
     private String email;
     private String username;
     private String password;
-    private Role role;
+    private Usuario.Role role;
     private Boolean active;
     private Boolean isLate;
 }

@@ -1,13 +1,19 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario;
 
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
+import static com.ada.group3.locadoradefilmes.security.PermissionValidation.validatePermission;
 
 @RestController
 @RequestMapping("${api.mapping}/usuarios")
@@ -17,13 +23,17 @@ public class UsuarioController {
     private final UsuarioService service;
 
     @GetMapping
+    @PreAuthorize("hasRole(T(com.ada.group3.locadoradefilmes.modelo.usuario.Usuario.Role).ADMIN.name())")
     public List<UsuarioDto> listarTodos() {
         return this.service.listarTodos();
     }
 
-    @GetMapping(value = "busca", params = "login")
-    public UsuarioDto buscarPorLogin(@RequestParam String login) {
-        return this.service.buscarPorUsername(login);
+    @GetMapping("/{username}")
+    public UsuarioDto buscarPorLogin(@PathVariable String username, Authentication authentication) {
+            if(validatePermission.apply(authentication,username)){
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Acesso negado");
+            }
+        return this.service.buscarPorUsername(username);
     }
 
     @PostMapping
@@ -32,30 +42,33 @@ public class UsuarioController {
         return this.service.adicionarUsuario(usuarioRequest);
     }
 
-    @PutMapping("/{login}")
+    @PutMapping("/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void atualizar(@PathVariable String login, @RequestBody UsuarioDto usuarioAtualizado) {
-        this.service.atualizar(login, usuarioAtualizado);
+    public void atualizar(@PathVariable String username, @RequestBody UsuarioDto usuarioAtualizado) {
+        this.service.atualizar(username, usuarioAtualizado);
     }
 
     @Transactional
-    @PatchMapping("/{login}/atraso/marcar")
+    @PatchMapping("/{username}/atraso/marcar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void marcarAtraso(@PathVariable String login) {
-        this.service.marcarAtraso(login);
+    public void marcarAtraso(@PathVariable String username) {
+        this.service.marcarAtraso(username);
     }
 
     @Transactional
-    @PatchMapping("/{login}/atraso/desmarcar")
+    @PatchMapping("/{username}/atraso/desmarcar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desmarcarAtraso(@PathVariable String login) {
-        this.service.desmarcarAtraso(login);
+    public void desmarcarAtraso(@PathVariable String username) {
+        this.service.desmarcarAtraso(username);
     }
 
 
-    @DeleteMapping("/{login}")
-    public void desativarUsuario(@PathVariable String login) {
-        this.service.desativarUsuario(login);
+    @DeleteMapping("/{username}")
+    public void desativarUsuario(@PathVariable String username,Authentication authentication) {
+        if(validatePermission.apply(authentication,username)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Acesso negado");
+        }
+        this.service.desativarUsuario(username);
     }
 
 }

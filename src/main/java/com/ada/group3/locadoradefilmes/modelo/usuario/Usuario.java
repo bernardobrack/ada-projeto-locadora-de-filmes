@@ -46,6 +46,10 @@ public class Usuario implements UserDetails {
             mappedBy = "usuario"
     )
     private List<Aluguel> alugueis;
+    public enum Role {
+        ADMIN,CLIENTE
+    }
+
 
 
     @Override

@@ -26,7 +26,7 @@ public class UsuarioRequest {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$",
             message = "A senha deve conter de 8 a 20 caracteres (lowercase, uppercase, numbers, special, no-sequences)")
     private String password;
-    private Role role;
+    private Usuario.Role role;
 
 
 
