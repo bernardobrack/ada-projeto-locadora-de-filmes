@@ -44,7 +44,10 @@ public class UsuarioController {
 
     @PutMapping("/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void atualizar(@PathVariable String username, @RequestBody UsuarioDto usuarioAtualizado) {
+    public void atualizar(@PathVariable String username, @RequestBody UsuarioUpdateRequest usuarioAtualizado,Authentication authentication) {
+        if(validatePermission.apply(authentication,username)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Acesso negado");
+        }
         this.service.atualizar(username, usuarioAtualizado);
     }
 

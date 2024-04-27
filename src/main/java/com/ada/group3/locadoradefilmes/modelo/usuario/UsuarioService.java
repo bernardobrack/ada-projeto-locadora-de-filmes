@@ -45,11 +45,11 @@ public class UsuarioService {
         Usuario savedUsuario = this.usuarioRepository.save(usuario);
         return modelMapper.map(savedUsuario, UsuarioDto.class);
     }
-    public void atualizar(String username, UsuarioDto usuarioAtualizado){
-        Usuario usuarioFound = this.usuarioRepository.findByUsername(username).orElseThrow(UsuarioNaoEncontradoException::new);
-        Usuario usuario = this.modelMapper.map(usuarioAtualizado,Usuario.class);
-        usuario.setId(usuarioFound.getId());
-        this.usuarioRepository.save(usuario);
+    public void atualizar(String username,UsuarioUpdateRequest request){
+        Usuario usuarioFound = usuarioRepository.findByUsername(username).orElseThrow(UsuarioNaoEncontradoException::new);
+        usuarioFound.setUsername(request.getUsername());
+        usuarioFound.setPassword(passwordEncoder.encode(request.getPassword()));
+        usuarioRepository.save(usuarioFound);
 
     }
     @Transactional
