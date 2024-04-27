@@ -1,6 +1,7 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario;
 
 import com.ada.group3.locadoradefilmes.exception.NaoEncontradoException;
+import com.ada.group3.locadoradefilmes.exception.UsuarioNaoEncontradoException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @Component
@@ -28,7 +28,7 @@ public class UsuarioService {
     public UsuarioDto buscarPorLogin(String login) {
         return this.usuarioRepository.findByLogin(login)
                 .map(usuario -> modelMapper.map(usuario, UsuarioDto.class))
-                .orElseThrow(NaoEncontradoException::new);
+                .orElseThrow(UsuarioNaoEncontradoException::new);
     }
 
     public UsuarioDto adicionarUsuario(UsuarioRequest usuarioRequest) {
@@ -39,7 +39,7 @@ public class UsuarioService {
         return modelMapper.map(savedUsuario, UsuarioDto.class);
     }
     public void atualizar(String login, UsuarioDto usuarioAtualizado){
-        Usuario usuarioFound = this.usuarioRepository.findByLogin(login).orElseThrow(NaoEncontradoException::new);
+        Usuario usuarioFound = this.usuarioRepository.findByLogin(login).orElseThrow(UsuarioNaoEncontradoException::new);
         Usuario usuario = this.modelMapper.map(usuarioAtualizado,Usuario.class);
         usuario.setId(usuarioFound.getId());
         this.usuarioRepository.save(usuario);
@@ -54,7 +54,7 @@ public class UsuarioService {
         this.usuarioRepository.desmarcarAtraso(login);
     }
     public void desativarUsuario(String login){
-       Usuario usuario = this.usuarioRepository.findByLogin(login).orElseThrow(NaoEncontradoException::new);
+       Usuario usuario = this.usuarioRepository.findByLogin(login).orElseThrow(UsuarioNaoEncontradoException::new);
        usuario.setAtivo(false);
        this.usuarioRepository.save(usuario);
     }

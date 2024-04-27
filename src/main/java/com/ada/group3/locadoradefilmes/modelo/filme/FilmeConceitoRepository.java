@@ -4,9 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface FilmeConceitoRepository extends JpaRepository<FilmeConceito, Long> {
+public interface FilmeConceitoRepository extends JpaRepository<FilmeConceito, Integer> {
 
-    Optional<FilmeConceito> findById(UUID uuid);
+    Optional<FilmeConceito> findByUuid(UUID uuid);
 
-    void deleteById(UUID uuid);
+    void deleteByUuid(UUID uuid);
 }

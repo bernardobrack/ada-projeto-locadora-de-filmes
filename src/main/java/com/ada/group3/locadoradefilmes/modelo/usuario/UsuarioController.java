@@ -30,27 +30,30 @@ public class UsuarioController {
     public UsuarioDto adicionarUsuario(@RequestBody UsuarioRequest usuarioRequest) {
         return this.service.adicionarUsuario(usuarioRequest);
     }
+
     @PutMapping("/{login}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void atualizar(@PathVariable String login,@RequestBody UsuarioDto usuarioAtualizado){
-        this.service.atualizar(login,usuarioAtualizado);
+    public void atualizar(@PathVariable String login, @RequestBody UsuarioDto usuarioAtualizado) {
+        this.service.atualizar(login, usuarioAtualizado);
     }
+
     @Transactional
     @PatchMapping("/{login}/atraso/marcar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void marcarAtraso(@PathVariable String login) {
         this.service.marcarAtraso(login);
     }
+
     @Transactional
     @PatchMapping("/{login}/atraso/desmarcar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void desmarcarAtraso(@PathVariable String login)  {
+    public void desmarcarAtraso(@PathVariable String login) {
         this.service.desmarcarAtraso(login);
     }
 
 
     @DeleteMapping("/{login}")
-    public void desativarUsuario(@PathVariable String login){
+    public void desativarUsuario(@PathVariable String login) {
         this.service.desativarUsuario(login);
     }
 

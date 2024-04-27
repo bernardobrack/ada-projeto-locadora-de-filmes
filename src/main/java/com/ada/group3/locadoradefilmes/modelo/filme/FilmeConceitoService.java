@@ -1,5 +1,6 @@
 package com.ada.group3.locadoradefilmes.modelo.filme;
 
+import com.ada.group3.locadoradefilmes.exception.FilmeConceitoNaoEncontradoException;
 import com.ada.group3.locadoradefilmes.exception.NaoEncontradoException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -23,9 +24,9 @@ public class FilmeConceitoService {
     }
 
     public FilmeConceitoDto buscarPorUUID(UUID uuid) {
-        return this.filmeConceitoRepository.findById(uuid)
+        return this.filmeConceitoRepository.findByUuid(uuid)
                 .map(filme -> modelMapper.map(filme, FilmeConceitoDto.class))
-                .orElseThrow(NaoEncontradoException::new);
+                .orElseThrow(FilmeConceitoNaoEncontradoException::new);
     }
 
     public FilmeConceitoDto adicionarFilmeConceito(FilmeConceitoRequest filmeConceitoRequest) {
@@ -35,7 +36,7 @@ public class FilmeConceitoService {
     }
 
     public void atualizar(UUID uuid, FilmeConceitoDto filmeConceitoAtualizado) {
-        FilmeConceito filmeConceitoFound = this.filmeConceitoRepository.findById(uuid).orElseThrow(NaoEncontradoException::new);
+        FilmeConceito filmeConceitoFound = this.filmeConceitoRepository.findByUuid(uuid).orElseThrow(FilmeConceitoNaoEncontradoException::new);
         FilmeConceito filmeConceitoEntity = modelMapper.map(filmeConceitoAtualizado, FilmeConceito.class);
         filmeConceitoEntity.setId(filmeConceitoFound.getId());
         this.filmeConceitoRepository.save(filmeConceitoEntity);
@@ -43,6 +44,6 @@ public class FilmeConceitoService {
 
     @Transactional
     public void excluir(UUID uuid) {
-        this.filmeConceitoRepository.deleteById(uuid);
+        this.filmeConceitoRepository.deleteByUuid(uuid);
     }
 }
