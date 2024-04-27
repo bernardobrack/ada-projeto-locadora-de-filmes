@@ -42,6 +42,7 @@ public class UsuarioService {
         usuario.setActive(true);
         usuario.setIsLate(false);
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuario.setRole(Usuario.Role.CLIENTE);
         Usuario savedUsuario = this.usuarioRepository.save(usuario);
         return modelMapper.map(savedUsuario, UsuarioDto.class);
     }

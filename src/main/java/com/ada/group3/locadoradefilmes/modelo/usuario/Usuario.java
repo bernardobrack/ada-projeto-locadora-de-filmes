@@ -33,7 +33,6 @@ public class Usuario implements UserDetails {
     private Role role;
     @Column(columnDefinition = "boolean default true")
     private Boolean active;
-
     @Column(columnDefinition = "boolean default false")
     private Boolean isLate;
     @Column(columnDefinition = "boolean default false")
