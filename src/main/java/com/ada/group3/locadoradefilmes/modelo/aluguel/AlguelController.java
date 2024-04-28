@@ -1,9 +1,12 @@
 package com.ada.group3.locadoradefilmes.modelo.aluguel;
 
 
+import com.ada.group3.locadoradefilmes.security.PermissionValidation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,8 +29,9 @@ public class AlguelController {
     }
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public AluguelDTO save(@Valid @RequestBody AluguelRegistrationRequest aluguel) {
-        this.aluguelService.save(
+    public AluguelDTO save(@Valid @RequestBody AluguelRegistrationRequest aluguel, Authentication authentication) {
+        if(PermissionValidation.validatePermission.apply(authentication, aluguel.usuarioLogin())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        return this.aluguelService.save(
                 new AluguelDTO(
                         UUID.randomUUID(),
                         LocalDateTime.now(),
@@ -36,6 +40,10 @@ public class AlguelController {
                         aluguel.filmeUuid()
                 )
         );
-        return null;
+    }
+
+    @PatchMapping("/{aluguelId}")
+    public AluguelDTO update(@PathVariable UUID aluguelId, Authentication authentication) {
+        return this.aluguelService.refund(aluguelId, authentication);
     }
 }
