@@ -82,5 +82,12 @@ public class RestControllerAdvice extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(LoginInvalidoException.class)
+    public ResponseEntity<ErrorResponse> loginInvalidoExceptionHandler(LoginInvalidoException ex) {
+        final ErrorResponse errorResponse = new ErrorResponse(ex.getClass(), HttpStatus.UNAUTHORIZED, ex.getMessage());
+        log.debug(ex.getMessage(), ex);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
 
 }
