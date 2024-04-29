@@ -1,10 +1,11 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario;
 
-import com.ada.group3.locadoradefilmes.exception.NaoEncontradoException;
-import com.ada.group3.locadoradefilmes.exception.UsuarioNaoEncontradoException;
+import com.ada.group3.locadoradefilmes.exception.*;
+import com.ada.group3.locadoradefilmes.modelo.usuario.EmailValidation.EmailValidationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,10 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final EmailValidationService emailValidationService;
 
+    @Value("${mailboxlayer.api.key}")
+    private String apiKey;
 
     public List<UsuarioDto> listarTodos() {
         return this.usuarioRepository.findAll()
@@ -32,12 +36,22 @@ public class UsuarioService {
                 .map(usuario -> modelMapper.map(usuario, UsuarioDto.class))
                 .orElseThrow(UsuarioNaoEncontradoException::new);
     }
-    public Usuario getByUsernameEntity(String username){
+
+    public Usuario getByUsernameEntity(String username) {
         return this.usuarioRepository.findByUsername(username)
                 .orElseThrow(UsuarioNaoEncontradoException::new);
     }
 
     public UsuarioDto adicionarUsuario(UsuarioRequest usuarioRequest) {
+        String email = usuarioRequest.getEmail();
+        var response = emailValidationService.validarEmail(email, apiKey);
+        if (!response.isFormat_valid() || !response.isMx_found()) {
+            throw new EmailInvalidoException("E-mail inválido");
+        }
+        if(usuarioRepository.findByUsername(usuarioRequest.getUsername()).isPresent()){
+            throw new UsuarioJaExisteException();
+        }
+
         Usuario usuario = modelMapper.map(usuarioRequest, Usuario.class);
         usuario.setActive(true);
         usuario.setIsLate(false);
@@ -46,27 +60,41 @@ public class UsuarioService {
         Usuario savedUsuario = this.usuarioRepository.save(usuario);
         return modelMapper.map(savedUsuario, UsuarioDto.class);
     }
-    public void atualizar(String username,UsuarioUpdateRequest request){
+
+    public void atualizar(String username, UsuarioUpdateRequest request) {
         Usuario usuarioFound = usuarioRepository.findByUsername(username).orElseThrow(UsuarioNaoEncontradoException::new);
+        if(usuarioRepository.findByUsername(request.getUsername()).isPresent()){
+            throw new UsuarioJaExisteException();
+        }
         usuarioFound.setUsername(request.getUsername());
         usuarioFound.setPassword(passwordEncoder.encode(request.getPassword()));
         usuarioRepository.save(usuarioFound);
+    }
 
-    }
     @Transactional
-    public void marcarAtraso(String username){
-            this.usuarioRepository.marcarAtraso(username);
+    public void marcarAtraso(String username) {
+        this.usuarioRepository.marcarAtraso(username);
     }
+
     @Transactional
-    public void desmarcarAtraso(String username){
+    public void desmarcarAtraso(String username) {
         this.usuarioRepository.desmarcarAtraso(username);
     }
-    public void desativarUsuario(String username){
-       Usuario usuario = this.usuarioRepository.findByUsername(username).orElseThrow(UsuarioNaoEncontradoException::new);
-       usuario.setActive(false);
-       this.usuarioRepository.save(usuario);
+
+    public void desativarUsuario(String username) {
+        Usuario usuario = this.usuarioRepository.findByUsername(username).orElseThrow(UsuarioNaoEncontradoException::new);
+        usuario.setActive(false);
+        this.usuarioRepository.save(usuario);
     }
 
+    public UsuarioDto autenticar(String username, String senha) {
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(UsuarioNaoEncontradoException::new);
 
-
+        if (passwordEncoder.matches(senha, usuario.getPassword())) {
+            return modelMapper.map(usuario, UsuarioDto.class);
+        } else {
+            throw new LoginInvalidoException("Credenciais de login inválidas.");
+        }
+    }
 }
