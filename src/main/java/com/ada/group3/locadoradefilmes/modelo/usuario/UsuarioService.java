@@ -1,9 +1,6 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario;
 
-import com.ada.group3.locadoradefilmes.exception.EmailInvalidoException;
-import com.ada.group3.locadoradefilmes.exception.LoginInvalidoException;
-import com.ada.group3.locadoradefilmes.exception.NaoEncontradoException;
-import com.ada.group3.locadoradefilmes.exception.UsuarioNaoEncontradoException;
+import com.ada.group3.locadoradefilmes.exception.*;
 import com.ada.group3.locadoradefilmes.modelo.usuario.EmailValidation.EmailValidationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -47,12 +44,12 @@ public class UsuarioService {
 
     public UsuarioDto adicionarUsuario(UsuarioRequest usuarioRequest) {
         String email = usuarioRequest.getEmail();
-
-        //TODO Confirmar se está funcionando
         var response = emailValidationService.validarEmail(email, apiKey);
-        System.out.println(response);
-        if (!response.isFormatValid()) {
+        if (!response.isFormat_valid() || !response.isMx_found()) {
             throw new EmailInvalidoException("E-mail inválido");
+        }
+        if(usuarioRepository.findByUsername(usuarioRequest.getUsername()).isPresent()){
+            throw new UsuarioJaExisteException();
         }
 
         Usuario usuario = modelMapper.map(usuarioRequest, Usuario.class);
@@ -66,6 +63,9 @@ public class UsuarioService {
 
     public void atualizar(String username, UsuarioUpdateRequest request) {
         Usuario usuarioFound = usuarioRepository.findByUsername(username).orElseThrow(UsuarioNaoEncontradoException::new);
+        if(usuarioRepository.findByUsername(request.getUsername()).isPresent()){
+            throw new UsuarioJaExisteException();
+        }
         usuarioFound.setUsername(request.getUsername());
         usuarioFound.setPassword(passwordEncoder.encode(request.getPassword()));
         usuarioRepository.save(usuarioFound);
