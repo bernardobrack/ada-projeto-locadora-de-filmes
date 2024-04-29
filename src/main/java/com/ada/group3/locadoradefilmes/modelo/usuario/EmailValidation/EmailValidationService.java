@@ -1,26 +1,16 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario.EmailValidation;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-@Service
-public class EmailValidationService {
+@FeignClient(value = "teste", url = "http://apilayer.net", path = "/api/check")
+public interface EmailValidationService {
 
-    @Value("${mailboxlayer.api.key}")
-    private String apiKey;
 
-    private final RestTemplate restTemplate;
-
-    public EmailValidationService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
-    public boolean validarEmail(String email) {
-        String url = "http://apilayer.net/api/check?access_key=" + apiKey + "&email=" + email;
-
-        EmailValidationResponse response = restTemplate.getForObject(url, EmailValidationResponse.class);
-
-        return response.isSmtpCheck() && response.isFormatValid();
-    }
+    @GetMapping(params = {"email","access_key"})
+    EmailValidationResponse validarEmail(@RequestParam("email") String email, @RequestParam("access_key") String accessKey);
 }

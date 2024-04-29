@@ -8,6 +8,7 @@ import com.ada.group3.locadoradefilmes.modelo.usuario.EmailValidation.EmailValid
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ public class UsuarioService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailValidationService emailValidationService;
+
+    @Value("${mailboxlayer.api.key}")
+    private String apiKey;
 
     public List<UsuarioDto> listarTodos() {
         return this.usuarioRepository.findAll()
@@ -45,7 +49,9 @@ public class UsuarioService {
         String email = usuarioRequest.getEmail();
 
         //TODO Confirmar se está funcionando
-        if (!emailValidationService.validarEmail(email)) {
+        var response = emailValidationService.validarEmail(email, apiKey);
+        System.out.println(response);
+        if (!response.isFormatValid()) {
             throw new EmailInvalidoException("E-mail inválido");
         }
 

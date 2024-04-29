@@ -1,9 +1,13 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario.EmailValidation;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Setter;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class EmailValidationResponse {
+import java.io.Serializable;
+
+
+@Setter
+public class EmailValidationResponse implements Serializable {
+
 
     private boolean format_valid;
     private boolean smtp_check;
