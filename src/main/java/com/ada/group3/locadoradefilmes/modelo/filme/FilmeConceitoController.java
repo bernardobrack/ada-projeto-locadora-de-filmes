@@ -24,6 +24,16 @@ public class FilmeConceitoController {
         return service.listarPorTitulo(titulo);
     }
 
+    @GetMapping(params = "genero")
+    public List<FilmeConceitoDto> consultarPorGenero(@RequestParam String genero) {
+        return service.listarPorGenero(genero);
+    }
+
+    @GetMapping(params = {"titulo", "genero"})
+    public List<FilmeConceitoDto> consultarPorTituloEGenero(@RequestParam String titulo, @RequestParam String genero) {
+        return service.listarPorTituloEGenero(titulo, genero);
+    }
+
     @GetMapping("/{uuid}")
     public FilmeConceitoDto buscarPorUUID(@PathVariable UUID uuid) {
         return this.service.buscarPorUUID(uuid);

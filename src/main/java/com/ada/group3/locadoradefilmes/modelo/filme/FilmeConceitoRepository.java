@@ -13,4 +13,8 @@ public interface FilmeConceitoRepository extends JpaRepository<FilmeConceito, In
     void deleteByUuid(UUID uuid);
 
     List<FilmeConceito> findByNomeContainingIgnoreCase(String nome);
+
+    List<FilmeConceito> findByGeneroContainingIgnoreCase(String genero);
+
+    List<FilmeConceito> findByNomeContainingIgnoreCaseAndGeneroContainingIgnoreCase(String titulo, String genero);
 }
