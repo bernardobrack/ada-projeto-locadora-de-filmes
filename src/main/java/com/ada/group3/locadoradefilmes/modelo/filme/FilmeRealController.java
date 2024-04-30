@@ -3,6 +3,7 @@ package com.ada.group3.locadoradefilmes.modelo.filme;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class FilmeRealController {
     private final FilmeRealService filmeRealService;
 
     @PostMapping
+    @PreAuthorize("hasRole(T(com.ada.group3.locadoradefilmes.modelo.usuario.Usuario.Role).ADMIN.name())")
     public FilmeRealDto cadastrarFilme(@Valid @RequestBody FilmeRealRequest filmeRealRequest, @PathVariable UUID filmeConceitoId) {
         FilmeReal filmeReal = filmeRealService.save(filmeConceitoId);
         FilmeConceito filmeConceito = filmeReal.getFilmeConceito();
