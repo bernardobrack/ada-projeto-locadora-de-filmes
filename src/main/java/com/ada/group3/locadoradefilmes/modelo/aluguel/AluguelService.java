@@ -34,13 +34,26 @@ public class AluguelService {
 
     public List<AluguelDTO> findAll() {
         return aluguelRepository.findAll().stream()
-                .map(entity -> new AluguelDTO(
-                        entity.getUuid(),
-                        entity.getHorarioAluguel(),
-                        entity.getHorarioDevolucao(),
-                        entity.getUsuario().getUsername(),
-                        entity.getFilme().getUuid()
-                )).toList();
+                .map(this::aluguelToDTO)
+                .toList();
+    }
+
+    public AluguelDTO findByUuid(UUID uuid) {
+        Optional<Aluguel> aluguelOptional = aluguelRepository.findByUuid(uuid);
+        Aluguel aluguelEncontrado = aluguelOptional.orElseThrow(AluguelNaoEncontradoException::new);
+        return aluguelToDTO(aluguelEncontrado);
+    }
+
+    public List<AluguelDTO> listAllActiveOrInactive(Boolean active) {
+        List<Aluguel> answerList;
+        if(active) {
+            answerList = aluguelRepository.findByHorarioDevolucaoIsNull();
+        } else {
+            answerList = aluguelRepository.findByHorarioDevolucaoIsNotNull();
+        }
+        return answerList.stream()
+                .map(this::aluguelToDTO)
+                .toList();
     }
 
     public AluguelDTO save(AluguelDTO aluguelDTO) {
@@ -53,13 +66,7 @@ public class AluguelService {
         if(filmeReal.isAlugado()) throw new RuntimeException("Filme já está alugado");
         filmeReal.setAlugado(true);
         Aluguel aluguel = aluguelRepository.save(new Aluguel(null, aluguelDTO.getUuid(), aluguelDTO.getHorarioAluguel(), aluguelDTO.getHorarioDevolucao(),usuario, filmeReal));
-        return new AluguelDTO(
-                aluguel.getUuid(),
-                aluguel.getHorarioAluguel(),
-                aluguel.getHorarioDevolucao(),
-                aluguel.getUsuario().getUsername(),
-                aluguel.getFilme().getUuid()
-        );
+        return aluguelToDTO(aluguel);
     }
 
     public AluguelDTO refund(UUID aluguelId, Authentication authentication) {
@@ -68,14 +75,18 @@ public class AluguelService {
             aluguel.setHorarioDevolucao(LocalDateTime.now());
             aluguel.getFilme().setAlugado(false);
             aluguel = aluguelRepository.save(aluguel);
-            return new AluguelDTO(
-                    aluguel.getUuid(),
-                    aluguel.getHorarioAluguel(),
-                    aluguel.getHorarioDevolucao(),
-                    aluguel.getUsuario().getUsername(),
-                    aluguel.getFilme().getUuid()
-            );
+            return aluguelToDTO(aluguel);
         }
         throw new AccessDeniedException("Access denied");
+    }
+
+    private AluguelDTO aluguelToDTO(Aluguel aluguel) {
+        return new AluguelDTO(
+                aluguel.getUuid(),
+                aluguel.getHorarioAluguel(),
+                aluguel.getHorarioDevolucao(),
+                aluguel.getUsuario().getUsername(),
+                aluguel.getFilme().getUuid()
+        );
     }
 }
