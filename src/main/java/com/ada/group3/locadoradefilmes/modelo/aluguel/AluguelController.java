@@ -14,14 +14,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.mapping}/alugueis")
-public class AlguelController {
+public class AluguelController {
 
     private AluguelService aluguelService;
 
-    public AlguelController(AluguelService aluguelService) {
+    public AluguelController(AluguelService aluguelService) {
         this.aluguelService = aluguelService;
     }
-    //TODO: adicionar filtros: ver alugueis de um filme, ver alugueis ativos e nao ativos
+    //TODO: adicionar filtros: ver alugueis de um filme
     //TODO: autorizacao (no filme real tb)
     //TODO: so admin pode criar filmes reais e conceito
 
@@ -30,6 +30,19 @@ public class AlguelController {
     public List<AluguelDTO> listAll() {
         return aluguelService.findAll();
     }
+
+    @GetMapping(params = "active")
+    public List<AluguelDTO> listAllActiveOrInactive(@RequestParam Boolean active) {
+        return aluguelService.listAllActiveOrInactive(active);
+    }
+
+
+    @GetMapping("/{aluguel_id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public AluguelDTO findById(@PathVariable UUID aluguel_id) {
+        return this.aluguelService.findByUuid(aluguel_id);
+    }
+
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public AluguelDTO save(@Valid @RequestBody AluguelRegistrationRequest aluguel, Authentication authentication) {
