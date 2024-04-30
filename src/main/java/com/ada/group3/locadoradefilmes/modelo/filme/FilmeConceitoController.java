@@ -19,8 +19,13 @@ public class FilmeConceitoController {
         return this.service.listarTodos();
     }
 
-    @GetMapping(value = "busca", params = "uuid")
-    public FilmeConceitoDto buscarPorUUID(@RequestParam UUID uuid) {
+    @GetMapping(params = "titulo")
+    public List<FilmeConceitoDto> consultarPorNome(@RequestParam String titulo) {
+        return service.listarPorTitulo(titulo);
+    }
+
+    @GetMapping("/{uuid}")
+    public FilmeConceitoDto buscarPorUUID(@PathVariable UUID uuid) {
         return this.service.buscarPorUUID(uuid);
     }
 
@@ -29,6 +34,8 @@ public class FilmeConceitoController {
     public FilmeConceitoDto adicionarFilmeConceito(@RequestBody FilmeConceitoRequest filmeConceitoRequest) {
         return this.service.adicionarFilmeConceito(filmeConceitoRequest);
     }
+
+
 
     @PutMapping("/{uuid}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

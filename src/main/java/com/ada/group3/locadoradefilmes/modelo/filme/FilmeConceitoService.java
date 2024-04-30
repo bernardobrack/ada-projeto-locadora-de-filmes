@@ -23,6 +23,13 @@ public class FilmeConceitoService {
                 .toList();
     }
 
+    public List<FilmeConceitoDto> listarPorTitulo(String titulo) {
+        return filmeConceitoRepository.findByNomeContainingIgnoreCase(titulo)
+                .stream()
+                .map(filmeConceito -> modelMapper.map(filmeConceito, FilmeConceitoDto.class))
+                .toList();
+    }
+
     public FilmeConceitoDto buscarPorUUID(UUID uuid) {
         return this.filmeConceitoRepository.findByUuid(uuid)
                 .map(filme -> modelMapper.map(filme, FilmeConceitoDto.class))
