@@ -24,8 +24,8 @@ public class FilmeRealService {
         return filmeRealRepository.save(filmeReal);
     }
 
-    public List<FilmeReal> listarFilmes() {
-        return filmeRealRepository.findAll();
+    public List<FilmeReal> listarFilmes(UUID filmeConceitoId) {
+        return filmeRealRepository.findByFilmeConceitoUuid(filmeConceitoId);
     }
 
 }

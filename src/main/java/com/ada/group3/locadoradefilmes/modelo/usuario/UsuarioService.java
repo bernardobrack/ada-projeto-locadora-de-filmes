@@ -1,6 +1,7 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario;
 
 import com.ada.group3.locadoradefilmes.exception.*;
+import com.ada.group3.locadoradefilmes.modelo.usuario.EmailValidation.EmailValidationResponse;
 import com.ada.group3.locadoradefilmes.modelo.usuario.EmailValidation.EmailValidationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

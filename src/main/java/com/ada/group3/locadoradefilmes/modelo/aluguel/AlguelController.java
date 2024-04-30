@@ -21,6 +21,9 @@ public class AlguelController {
     public AlguelController(AluguelService aluguelService) {
         this.aluguelService = aluguelService;
     }
+    //TODO: adicionar filtros: ver alugueis de um filme, ver alugueis ativos e nao ativos
+    //TODO: autorizacao (no filme real tb)
+    //TODO: so admin pode criar filmes reais e conceito
 
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
