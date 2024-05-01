@@ -42,6 +42,20 @@ public class FilmeRealController {
                 )).toList();
     }
 
+    @GetMapping(params = "alugado")
+    public List<FilmeRealDto> listarFilmesAlugados(@PathVariable UUID filmeConceitoId, @RequestParam Boolean alugado) {
+        return this.filmeRealService.listarFilmesAlugadosOuNao(filmeConceitoId, alugado).stream()
+                .map(filme -> new FilmeRealDto(
+                        filme.getUuid(),
+                        new FilmeConceitoDto(
+                                filme.getFilmeConceito().getUuid(),
+                                filme.getFilmeConceito().getNome(),
+                                filme.getFilmeConceito().getGenero(),
+                                filme.getFilmeConceito().getDescricao()),
+                        filme.isAlugado()
+                )).toList();
+    }
+
 
 
 }
