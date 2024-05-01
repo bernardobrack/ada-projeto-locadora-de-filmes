@@ -28,4 +28,8 @@ public class FilmeRealService {
         return filmeRealRepository.findByFilmeConceitoUuid(filmeConceitoId);
     }
 
+    public List<FilmeReal> listarFilmesAlugadosOuNao(UUID filmeConceitoId, Boolean alugado) {
+        return filmeRealRepository.findByUuidAndIsAlugado(filmeConceitoId,alugado);
+    }
+
 }

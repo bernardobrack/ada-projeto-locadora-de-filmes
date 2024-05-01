@@ -2,6 +2,7 @@ package com.ada.group3.locadoradefilmes.modelo.filme;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -41,6 +42,7 @@ public class FilmeConceitoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole(T(com.ada.group3.locadoradefilmes.modelo.usuario.Usuario.Role).ADMIN.name())")
     public FilmeConceitoDto adicionarFilmeConceito(@RequestBody FilmeConceitoRequest filmeConceitoRequest) {
         return this.service.adicionarFilmeConceito(filmeConceitoRequest);
     }
@@ -48,6 +50,7 @@ public class FilmeConceitoController {
 
 
     @PutMapping("/{uuid}")
+    @PreAuthorize("hasRole(T(com.ada.group3.locadoradefilmes.modelo.usuario.Usuario.Role).ADMIN.name())")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizar(@PathVariable UUID uuid, @RequestBody FilmeConceitoDto filmeConceitoAtualizado) {
         this.service.atualizar(uuid, filmeConceitoAtualizado);
@@ -55,6 +58,7 @@ public class FilmeConceitoController {
 
     @Transactional
     @DeleteMapping("/{uuid}")
+    @PreAuthorize("hasRole(T(com.ada.group3.locadoradefilmes.modelo.usuario.Usuario.Role).ADMIN.name())")
     public void excluir(@PathVariable UUID uuid) {
         this.service.excluir(uuid);
     }

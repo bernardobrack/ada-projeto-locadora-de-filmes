@@ -53,6 +53,7 @@ public class UsuarioController {
 
     @Transactional
     @PatchMapping("/{username}/atraso/marcar")
+    @PreAuthorize("hasRole(T(com.ada.group3.locadoradefilmes.modelo.usuario.Usuario.Role).ADMIN.name())")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void marcarAtraso(@PathVariable String username) {
         this.service.marcarAtraso(username);
@@ -60,6 +61,7 @@ public class UsuarioController {
 
     @Transactional
     @PatchMapping("/{username}/atraso/desmarcar")
+    @PreAuthorize("hasRole(T(com.ada.group3.locadoradefilmes.modelo.usuario.Usuario.Role).ADMIN.name())")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void desmarcarAtraso(@PathVariable String username) {
         this.service.desmarcarAtraso(username);
