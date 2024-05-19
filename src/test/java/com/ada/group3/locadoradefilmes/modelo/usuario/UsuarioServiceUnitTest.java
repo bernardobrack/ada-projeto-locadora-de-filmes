@@ -1,5 +1,6 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario;
 
+import com.ada.group3.locadoradefilmes.exception.EmailInvalidoException;
 import com.ada.group3.locadoradefilmes.exception.UsuarioJaExisteException;
 import com.ada.group3.locadoradefilmes.exception.UsuarioNaoEncontradoException;
 import com.ada.group3.locadoradefilmes.modelo.usuario.EmailValidation.EmailValidationResponse;
@@ -19,8 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class UsuarioServiceUnitTest {
 
@@ -57,13 +59,6 @@ public class UsuarioServiceUnitTest {
         usuario2.setUsername("jose.neto");
         usuario2.setPassword("St@rG@z3r^#");
 
-
-        EmailValidationResponse simulatedResponse = new EmailValidationResponse();
-        simulatedResponse.setFormat_valid(true);
-        simulatedResponse.setMx_found(true);
-
-        when(emailValidationService.validarEmail(anyString(), any())).thenReturn(simulatedResponse);
-
         Mockito.when(usuarioRepository.findByUsername("pedro.santos")).thenReturn(Optional.of(usuario));
         Mockito.when(usuarioRepository.findByUsername("jose.neto")).thenReturn(Optional.of(usuario2));
         Mockito.when(usuarioRepository.findAll()).thenReturn(Arrays.asList(usuario, usuario2));
@@ -99,9 +94,9 @@ public class UsuarioServiceUnitTest {
     public void listarTodos_deveRetornarListaDeUsuarios() {
 
         List<UsuarioDto> usuarios = usuarioService.listarTodos();
-        Assertions.assertEquals(2, usuarios.size());
-        Assertions.assertEquals("Pedro", usuarios.get(0).getName());
-        Assertions.assertEquals("Jose", usuarios.get(1).getName());
+        assertEquals(2, usuarios.size());
+        assertEquals("Pedro", usuarios.get(0).getName());
+        assertEquals("Jose", usuarios.get(1).getName());
 
 
     }
@@ -109,19 +104,24 @@ public class UsuarioServiceUnitTest {
     @Test
     public void buscarPorUsername_deveRetornarUsuario() {
         UsuarioDto usuario = usuarioService.buscarPorUsername("pedro.santos");
-        Assertions.assertEquals("pedro.santos", usuario.getUsername());
+        assertEquals("pedro.santos", usuario.getUsername());
 
 
     }
 
     @Test
     public void buscarPorUsernameNaoExistente_deveRetornarException() {
-        Assertions.assertThrows(UsuarioNaoEncontradoException.class,
+        assertThrows(UsuarioNaoEncontradoException.class,
                 () -> usuarioService.buscarPorUsername("marcelo.pereira"));
     }
 
     @Test
     public void criarUsuario_deveTerSucesso() {
+        EmailValidationResponse simulatedResponse = new EmailValidationResponse();
+        simulatedResponse.setFormat_valid(true);
+        simulatedResponse.setMx_found(true);
+
+        when(emailValidationService.validarEmail(anyString(), any())).thenReturn(simulatedResponse);
         UsuarioRequest usuarioRequest = new UsuarioRequest();
         usuarioRequest.setName("wagner");
         usuarioRequest.setLastName("souza");
@@ -132,11 +132,17 @@ public class UsuarioServiceUnitTest {
 
         usuarioService.adicionarUsuario(usuarioRequest);
 
-        Mockito.verify(usuarioRepository, Mockito.times(1)).save(any());
+        verify(usuarioRepository, times(1)).save(any());
     }
 
     @Test
     public void criarUsuarioJaExistente_deveRetornarException() {
+        EmailValidationResponse simulatedResponse = new EmailValidationResponse();
+        simulatedResponse.setFormat_valid(true);
+        simulatedResponse.setMx_found(true);
+
+        when(emailValidationService.validarEmail(anyString(), any())).thenReturn(simulatedResponse);
+
         UsuarioRequest usuarioRequest = new UsuarioRequest();
         usuarioRequest.setName("wagner");
         usuarioRequest.setLastName("souza");
@@ -145,8 +151,28 @@ public class UsuarioServiceUnitTest {
         usuarioRequest.setUsername("pedro.santos");
         usuarioRequest.setPassword("St@rG@z3r^#");
 
-        Assertions.assertThrows(UsuarioJaExisteException.class,
+        assertThrows(UsuarioJaExisteException.class,
                 () -> usuarioService.adicionarUsuario(usuarioRequest));
+
+    }
+    @Test
+    public void criarUsuarioComFormatoEmailInvalido_deveRetornarException(){
+        EmailValidationResponse simulatedResponse = new EmailValidationResponse();
+        simulatedResponse.setFormat_valid(false);
+        simulatedResponse.setMx_found(false);
+
+        when(emailValidationService.validarEmail(anyString(), any())).thenReturn(simulatedResponse);
+
+        UsuarioRequest user = new UsuarioRequest();
+        user.setName("wagner");
+        user.setLastName("souza");
+        user.setCpf("88730477000");
+        user.setEmail("wagnersouza@gmail.com");
+        user.setUsername("pedro.santos");
+        user.setPassword("St@rG@z3r^#");
+
+        Assertions.assertThrows(EmailInvalidoException.class,()-> usuarioService.adicionarUsuario(user));
+
 
     }
 
@@ -158,13 +184,13 @@ public class UsuarioServiceUnitTest {
         updateRequest.setPassword("St@rG@z3r^#");
         usuarioService.atualizar("pedro.santos", updateRequest);
         Assertions.assertTrue(usuario.isPresent());
-        Assertions.assertEquals("pedro.maia", usuario.get().getUsername());
+        assertEquals("pedro.maia", usuario.get().getUsername());
     }
 
     @Test
     public void atualizarUsuarioNaoExistente_deveRetornarException() {
         UsuarioUpdateRequest updateRequest = new UsuarioUpdateRequest();
-        Assertions.assertThrows(UsuarioNaoEncontradoException.class,
+        assertThrows(UsuarioNaoEncontradoException.class,
                 () -> usuarioService.atualizar("marcos.silva", updateRequest));
     }
 
@@ -172,20 +198,20 @@ public class UsuarioServiceUnitTest {
     public void atualizarUsernameDeUmUsuarioParaUmQueJaExiste_deveRetornarException() {
         UsuarioUpdateRequest updateRequest = new UsuarioUpdateRequest();
         updateRequest.setUsername("pedro.santos");
-        Assertions.assertThrows(UsuarioJaExisteException.class,
+        assertThrows(UsuarioJaExisteException.class,
                 () -> usuarioService.atualizar("jose.neto", updateRequest));
     }
 
     @Test
     public void marcarAtraso_deveTerSucesso() {
-        usuarioRepository.marcarAtraso("jose.neto");
-        Mockito.verify(usuarioRepository, Mockito.times(1)).marcarAtraso("jose.neto");
+        usuarioService.marcarAtraso("jose.neto");
+        verify(usuarioRepository, times(1)).marcarAtraso("jose.neto");
     }
 
     @Test
     public void desmarcarAtraso_deveTerSucesso() {
-        usuarioRepository.desmarcarAtraso("jose.neto");
-        Mockito.verify(usuarioRepository, Mockito.times(1)).desmarcarAtraso("jose.neto");
+        usuarioService.desmarcarAtraso("jose.neto");
+        verify(usuarioRepository, times(1)).desmarcarAtraso("jose.neto");
 
     }
 
@@ -199,13 +225,34 @@ public class UsuarioServiceUnitTest {
 
     @Test
     public void desativarUsuarioNaoExistente_deveRetornarException() {
-        Assertions.assertThrows(UsuarioNaoEncontradoException.class,
+        assertThrows(UsuarioNaoEncontradoException.class,
                 () -> usuarioService.desativarUsuario("ricardo.silva"));
     }
+    @Test
+   public void buscarEntidadeDeUsuarioExistente_deveRetornarEntidade() {
+        String username = "testUser";
+        Usuario mockUser = new Usuario();
+        mockUser.setUsername(username);
+        when(usuarioRepository.findByUsername(username)).thenReturn(Optional.of(mockUser));
+
+        Usuario user = usuarioService.getByUsernameEntity(username);
 
 
+        assertNotNull(user);
+        assertEquals(username, user.getUsername());
+        verify(usuarioRepository, times(1)).findByUsername(username);
+    }
+    @Test
+    public void buscarEntidadeDeUsuarioNaoExistente_deveRetornarException() {
+
+        String username = "nonExistentUser";
+        when(usuarioRepository.findByUsername(username)).thenReturn(Optional.empty());
+
+
+        assertThrows(UsuarioNaoEncontradoException.class, () -> usuarioService.getByUsernameEntity(username));
+        verify(usuarioRepository, times(1)).findByUsername(username);
+    }
 }
-
 
 
 
