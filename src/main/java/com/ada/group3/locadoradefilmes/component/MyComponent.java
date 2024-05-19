@@ -1,6 +1,6 @@
-package component;
+package com.ada.group3.locadoradefilmes.component;
 
-import jakarta.persistence.Id;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
