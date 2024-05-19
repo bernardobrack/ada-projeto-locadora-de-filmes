@@ -14,4 +14,7 @@ public class FilmeConceitoDto {
     private String nome;
     private String genero;
     private String descricao;
+
+    public FilmeConceitoDto(long l, String novoNome, String novaDescrição) {
+    }
 }

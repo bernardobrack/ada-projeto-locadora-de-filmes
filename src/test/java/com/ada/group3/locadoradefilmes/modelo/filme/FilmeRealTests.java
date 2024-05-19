@@ -18,6 +18,7 @@ public class FilmeRealTests {
         FilmeReal filmeReal = new FilmeReal(1L,isAlugado, UUID.randomUUID(), filmeConceito, lista);
         assertInstanceOf(FilmeReal.class,filmeReal);
     }
+
     @Test
     public void testFilmeConceitoNotNull() {
         FilmeReal filme = new FilmeReal();
@@ -28,7 +29,7 @@ public class FilmeRealTests {
     @Test
     public void testIdIsGenerated() {
         FilmeReal filme = new FilmeReal();
-        assertNull(filme.getId()); //
+        assertNull(filme.getId());
     }
 
     @Test

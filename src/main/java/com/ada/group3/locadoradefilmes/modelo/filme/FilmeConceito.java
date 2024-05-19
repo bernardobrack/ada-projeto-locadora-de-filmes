@@ -25,4 +25,7 @@ public class FilmeConceito {
             mappedBy = "filmeConceito"
     )
     private List<FilmeReal> filmesReais;
+
+    public FilmeConceito(long l, UUID uuid, String nomeAntigo, String descriçãoAntiga) {
+    }
 }
