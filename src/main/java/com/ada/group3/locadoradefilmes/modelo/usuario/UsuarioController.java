@@ -69,6 +69,7 @@ public class UsuarioController {
 
 
     @DeleteMapping("/{username}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void desativarUsuario(@PathVariable String username,Authentication authentication) {
         if(validatePermission.apply(authentication,username)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Acesso negado");

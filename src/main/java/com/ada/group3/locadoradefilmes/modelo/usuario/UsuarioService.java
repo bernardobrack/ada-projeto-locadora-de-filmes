@@ -88,14 +88,5 @@ public class UsuarioService {
         this.usuarioRepository.save(usuario);
     }
 
-    public UsuarioDto autenticar(String username, String senha) {
-        Usuario usuario = usuarioRepository.findByUsername(username)
-                .orElseThrow(UsuarioNaoEncontradoException::new);
 
-        if (passwordEncoder.matches(senha, usuario.getPassword())) {
-            return modelMapper.map(usuario, UsuarioDto.class);
-        } else {
-            throw new LoginInvalidoException("Credenciais de login inválidas.");
-        }
-    }
 }
