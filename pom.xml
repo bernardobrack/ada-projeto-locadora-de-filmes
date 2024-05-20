@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ada.group3</groupId>
-	<artifactId>locadoradefilmes</artifactId>
+	<artifactId>locadora-de-filmes</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>locadoradefilmes</name>
+	<name>locadora-de-filmes</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>22</java.version>
@@ -106,11 +106,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.11</version>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
 				<executions>
 					<execution>
 						<goals>
