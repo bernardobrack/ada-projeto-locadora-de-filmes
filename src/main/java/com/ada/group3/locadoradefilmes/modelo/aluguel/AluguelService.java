@@ -59,10 +59,9 @@ public class AluguelService {
     public AluguelDTO save(AluguelDTO aluguelDTO) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findByUsername(aluguelDTO.getUsuarioLogin());
         Usuario usuario = usuarioOptional.orElseThrow(UsuarioNaoEncontradoException::new);
-        FilmeReal filmeReal = filmeRealRepository.findByUuid(aluguelDTO.getFilmeUuid()).orElseThrow(FilmeRealNaoEncontradoException::new);
-        //TODO: mudar excecoes abaixo
         if(usuario.getIsLate()) throw new RuntimeException("Usuário tem alugueis atrasados");
         if(usuario.getAlugueis().stream().anyMatch(aluguel -> aluguel.getHorarioDevolucao() == null)) throw new RuntimeException("Usuario tem alugueis pendentes");
+        FilmeReal filmeReal = filmeRealRepository.findByUuid(aluguelDTO.getFilmeUuid()).orElseThrow(FilmeRealNaoEncontradoException::new);
         if(filmeReal.isAlugado()) throw new RuntimeException("Filme já está alugado");
         filmeReal.setAlugado(true);
         Aluguel aluguel = aluguelRepository.save(new Aluguel(null, aluguelDTO.getUuid(), aluguelDTO.getHorarioAluguel(), aluguelDTO.getHorarioDevolucao(),usuario, filmeReal));
