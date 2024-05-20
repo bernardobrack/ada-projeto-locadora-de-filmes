@@ -1,4 +1,6 @@
 package com.ada.group3.locadoradefilmes.modelo.usuario;
+import com.ada.group3.locadoradefilmes.modelo.usuario.EmailValidation.EmailValidationResponse;
+import com.ada.group3.locadoradefilmes.modelo.usuario.EmailValidation.EmailValidationService;
 import com.ada.group3.locadoradefilmes.security.DataBaseAuthConfig;
 import com.ada.group3.locadoradefilmes.security.PasswordEncoderConfig;
 import com.ada.group3.locadoradefilmes.security.WebSecurityConfig;
@@ -29,11 +31,17 @@ public class UsuarioControllerIntegrationTest {
     private MockMvc mockMvc;
     @SpyBean
     private UsuarioService service;
+    @SpyBean
+    private EmailValidationService emailValidationService;
 
 
     @Test
     @Order(1)
     public void criarUsuario_DeveTerSucesso() throws Exception {
+        EmailValidationResponse validationResponse = new EmailValidationResponse();
+        validationResponse.setMx_found(true);
+        validationResponse.setFormat_valid(true);
+        Mockito.doReturn(validationResponse).when(emailValidationService).validarEmail(Mockito.any(), Mockito.any());
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/v1/usuarios")
                                 .content("""
