@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ada.group3</groupId>
-	<artifactId>locadora-de-filmes</artifactId>
+	<artifactId>locadoradefilmes</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>locadora-de-filmes</name>
+	<name>locadoradefilmes</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>22</java.version>
