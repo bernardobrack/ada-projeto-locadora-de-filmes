@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -49,6 +49,11 @@ public class Usuario implements UserDetails {
         ADMIN,CLIENTE
     }
 
+    public Usuario() {
+        alugueis = new ArrayList<>();
+        active = true;
+        isLate = false;
+    }
 
 
     @Override

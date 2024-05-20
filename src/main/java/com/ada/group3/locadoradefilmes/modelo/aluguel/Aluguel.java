@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Getter
 @Setter
 @Entity
