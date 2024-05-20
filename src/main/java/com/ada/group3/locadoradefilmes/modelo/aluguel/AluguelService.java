@@ -71,6 +71,7 @@ public class AluguelService {
     public AluguelDTO refund(UUID aluguelId, Authentication authentication) {
         Aluguel aluguel = aluguelRepository.findByUuid(aluguelId).orElseThrow(AluguelNaoEncontradoException::new);
         if(!PermissionValidation.validatePermission.apply(authentication, aluguel.getUsuario().getUsername())) {
+            if(aluguel.getHorarioDevolucao() != null) throw new RuntimeException("Aluguel já inativo");
             aluguel.setHorarioDevolucao(LocalDateTime.now());
             aluguel.getFilme().setAlugado(false);
             aluguel = aluguelRepository.save(aluguel);

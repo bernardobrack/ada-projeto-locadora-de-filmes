@@ -18,6 +18,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -219,7 +221,7 @@ public class AluguelServiceUnitTest {
     }
 
     @Test
-    public void save_whenSuccessfull_mustChangeFilmeIsAlugadoToTrue() {
+    public void save_whenSuccessful_mustChangeFilmeIsAlugadoToTrue() {
         Mockito.doReturn(Optional.of(aluguel.getUsuario())).when(usuarioRepository).findByUsername(aluguel.getUsuario().getUsername());
         Mockito.doReturn(Optional.of(aluguel.getFilme())).when(filmeRealRepository).findByUuid(aluguel.getFilme().getUuid());
         Mockito.doReturn(aluguel).when(aluguelRepository).save(Mockito.any());
@@ -229,7 +231,7 @@ public class AluguelServiceUnitTest {
     }
 
     @Test
-    public void save_whenSuccessfull_mustSaveTheRightAluguelToRepository() {
+    public void save_whenSuccessful_mustSaveTheRightAluguelToRepository() {
         Mockito.doReturn(Optional.of(aluguel.getUsuario())).when(usuarioRepository).findByUsername(aluguel.getUsuario().getUsername());
         Mockito.doReturn(Optional.of(aluguel.getFilme())).when(filmeRealRepository).findByUuid(aluguel.getFilme().getUuid());
         Mockito.doReturn(aluguel).when(aluguelRepository).save(Mockito.any());
@@ -246,7 +248,7 @@ public class AluguelServiceUnitTest {
     }
 
     @Test
-    public void save_whenSuccessfull_mustReturnCorrespondingDto() {
+    public void save_whenSuccessful_mustReturnCorrespondingDto() {
         Mockito.doReturn(Optional.of(aluguel.getUsuario())).when(usuarioRepository).findByUsername(aluguel.getUsuario().getUsername());
         Mockito.doReturn(Optional.of(aluguel.getFilme())).when(filmeRealRepository).findByUuid(aluguel.getFilme().getUuid());
         Mockito.doReturn(aluguel).when(aluguelRepository).save(Mockito.any());
@@ -255,6 +257,115 @@ public class AluguelServiceUnitTest {
         Assertions.assertEquals(aluguelToDto(aluguel), response);
 
     }
+
+    @Test
+    public void refund_whenUuidHasNoCorrespondingAluguel_mustThrowAluguelNaoEncontradoException() {
+        Mockito.doReturn(Optional.empty()).when(aluguelRepository).findByUuid(aluguel.getUuid());
+        Assertions.assertThrows(
+                AluguelNaoEncontradoException.class,
+                () -> aluguelService.refund(aluguel.getUuid(), null)
+        );
+    }
+
+    @Test
+    public void refund_whenInvalidAuthenticationMustThrowAccessDeniedException() {
+        Mockito.doReturn(Optional.of(aluguel)).when(aluguelRepository).findByUuid(aluguel.getUuid());
+        var authentication = Mockito.mock(Authentication.class);
+        Mockito.doReturn("invalid-username").when(authentication).getName();
+        Mockito.doReturn(List.of()).when(authentication).getAuthorities();
+        Assertions.assertThrows(
+                AccessDeniedException.class,
+                () -> aluguelService.refund(aluguel.getUuid(), authentication)
+        );
+
+    }
+
+    @Test
+    public void refund_whenAluguelIsInvalid_mustThrowRuntimeException() {
+        Mockito.doReturn(Optional.of(aluguel)).when(aluguelRepository).findByUuid(aluguel.getUuid());
+        var authentication = Mockito.mock(Authentication.class);
+        Mockito.doReturn(aluguel.getUsuario().getUsername()).when(authentication).getName();
+        RuntimeException exception = Assertions.assertThrows(
+                RuntimeException.class,
+                () ->  aluguelService.refund(aluguel.getUuid(), authentication)
+        );
+        Assertions.assertEquals("Aluguel já inativo", exception.getMessage());
+
+    }
+
+    @Test
+    public void refund_whenSuccessful_mustSetAluguelHorarioDevolucaoToNow() {
+        aluguel.setHorarioDevolucao(null);
+        Mockito.doReturn(Optional.of(aluguel)).when(aluguelRepository).findByUuid(aluguel.getUuid());
+        var authentication = Mockito.mock(Authentication.class);
+        Mockito.doReturn(aluguel.getUsuario().getUsername()).when(authentication).getName();
+        Mockito.doReturn(aluguel).when(aluguelRepository).save(aluguel);
+
+        aluguelService.refund(aluguel.getUuid(), authentication);
+
+        Assertions.assertNotNull(aluguel.getHorarioDevolucao());
+
+    }
+
+    @Test
+    public void refund_whenSuccessful_mustSetFilmeAlugadoToFalse() {
+        aluguel.setHorarioDevolucao(null);
+        aluguel.getFilme().setAlugado(true);
+        aluguel.getUsuario().setAlugueis(List.of(aluguel));
+        Mockito.doReturn(Optional.of(aluguel)).when(aluguelRepository).findByUuid(aluguel.getUuid());
+        var authentication = Mockito.mock(Authentication.class);
+        Mockito.doReturn(aluguel.getUsuario().getUsername()).when(authentication).getName();
+        Mockito.doReturn(aluguel).when(aluguelRepository).save(aluguel);
+
+        aluguelService.refund(aluguel.getUuid(), authentication);
+
+        Assertions.assertFalse(aluguel.getFilme().isAlugado());
+    }
+
+    @Test
+    public void refund_whenSuccessful_mustUpdateRepositoryWithCorrectInformation() {
+        aluguel.setHorarioDevolucao(null);
+        aluguel.getFilme().setAlugado(true);
+        aluguel.getUsuario().setAlugueis(List.of(aluguel));
+        Mockito.doReturn(Optional.of(aluguel)).when(aluguelRepository).findByUuid(aluguel.getUuid());
+        var authentication = Mockito.mock(Authentication.class);
+        Mockito.doReturn(aluguel.getUsuario().getUsername()).when(authentication).getName();
+        Mockito.doReturn(aluguel).when(aluguelRepository).save(aluguel);
+
+
+        aluguelService.refund(aluguel.getUuid(), authentication);
+
+        ArgumentCaptor<Aluguel> aluguelArgumentCaptor = ArgumentCaptor.forClass(Aluguel.class);
+        Mockito.verify(aluguelRepository, Mockito.times(1)).save(aluguelArgumentCaptor.capture());
+        var captured = aluguelArgumentCaptor.getValue();
+        Assertions.assertEquals(aluguel.getUuid(), captured.getUuid());
+        Assertions.assertEquals(aluguel.getHorarioAluguel(), captured.getHorarioAluguel());
+        Assertions.assertNotNull(captured.getHorarioDevolucao());
+        Assertions.assertEquals(aluguel.getUsuario(), captured.getUsuario());
+        Assertions.assertEquals(aluguel.getFilme(), captured.getFilme());
+        Assertions.assertFalse(aluguel.getFilme().isAlugado());
+    }
+
+    @Test
+    public void refund_whenSuccessful_mustReturnCorrespondingAluguelDto() {
+        aluguel.setHorarioDevolucao(null);
+        aluguel.getFilme().setAlugado(true);
+        aluguel.getUsuario().setAlugueis(List.of(aluguel));
+        Mockito.doReturn(Optional.of(aluguel)).when(aluguelRepository).findByUuid(aluguel.getUuid());
+        var authentication = Mockito.mock(Authentication.class);
+        Mockito.doReturn(aluguel.getUsuario().getUsername()).when(authentication).getName();
+        Mockito.doReturn(aluguel).when(aluguelRepository).save(aluguel);
+
+
+        var response = aluguelService.refund(aluguel.getUuid(), authentication);
+        Assertions.assertInstanceOf(AluguelDTO.class, response);
+        Assertions.assertEquals(aluguel.getUuid(), response.getUuid());
+        Assertions.assertEquals(aluguel.getHorarioAluguel(), response.getHorarioAluguel());
+        Assertions.assertNotNull(response.getHorarioDevolucao());
+        Assertions.assertEquals(aluguel.getUsuario().getUsername(), response.getUsuarioLogin());
+        Assertions.assertEquals(aluguel.getFilme().getUuid(), response.getFilmeUuid());
+    }
+
     private AluguelDTO aluguelToDto(Aluguel aluguel) {
         return new AluguelDTO(
                 aluguel.getUuid(),
