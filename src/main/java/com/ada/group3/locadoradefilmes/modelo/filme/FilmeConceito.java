@@ -13,7 +13,7 @@ import java.util.UUID;
 public class FilmeConceito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Corrigido para "id" com letra minúscula para consistência
+    private Long id;
     @Column(columnDefinition = "uuid default random_uuid()", nullable = false)
     private UUID uuid;
     private String nome;
@@ -23,7 +23,6 @@ public class FilmeConceito {
     @OneToMany(mappedBy = "filmeConceito")
     private List<FilmeReal> filmesReais;
 
-    // Construtor necessário para os testes
     public FilmeConceito(Long id, UUID uuid, String nome, String genero, String descricao) {
         this.id = id;
         this.uuid = uuid;
@@ -32,7 +31,6 @@ public class FilmeConceito {
         this.descricao = descricao;
     }
 
-    // Construtor específico utilizado no teste (sem gênero)
     public FilmeConceito(Long id, UUID uuid, String nome, String descricao) {
         this.id = id;
         this.uuid = uuid;

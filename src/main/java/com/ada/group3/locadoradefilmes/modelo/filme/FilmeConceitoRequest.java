@@ -22,14 +22,12 @@ public class FilmeConceitoRequest {
     @Size(min = 1, max = 144, message = "Descrição deve conter letras de A a Z e/ou números entre 1 e 144 caracteres")
     private String descricao;
 
-    // Construtor que aceita todos os argumentos
     public FilmeConceitoRequest(String nome, String genero, String descricao) {
         this.nome = nome;
         this.genero = genero;
         this.descricao = descricao;
     }
 
-    // Construtor padrão
     public FilmeConceitoRequest() {
     }
 }
