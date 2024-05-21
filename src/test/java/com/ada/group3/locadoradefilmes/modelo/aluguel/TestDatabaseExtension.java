@@ -32,10 +32,6 @@ public class TestDatabaseExtension implements BeforeAllCallback {
         filmeConceitoService = testContext.getBean(FilmeConceitoService.class);
         filmeRealService = testContext.getBean(FilmeRealService.class);
         emailValidationService = testContext.getBean(EmailValidationService.class);
-        EmailValidationResponse emailValidationResponse = new EmailValidationResponse();
-        emailValidationResponse.setFormat_valid(true);
-        emailValidationResponse.setMx_found(true);
-        Mockito.doReturn(emailValidationResponse).when(emailValidationService).validarEmail(Mockito.eq("user@test.com"), Mockito.any());
         FilmeConceitoRequest request = new FilmeConceitoRequest();
         request.setGenero("Genero");
         request.setNome("Filme teste");

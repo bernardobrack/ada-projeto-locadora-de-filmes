@@ -1,0 +1,24 @@
+{
+  "request": {
+    "urlPathPattern": "/email",
+    "method": "GET",
+    "queryParameters": {
+      "email": {
+        "matches": "(.*)"
+      },
+      "access_key": {
+        "matches": "(.*)"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "format_valid": true,
+      "mx_found": true
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

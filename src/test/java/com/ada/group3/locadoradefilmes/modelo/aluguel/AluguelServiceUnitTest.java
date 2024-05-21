@@ -73,7 +73,7 @@ public class AluguelServiceUnitTest {
         List<AluguelDTO> response = aluguelService.findAll();
         Assertions.assertNotNull(response);
         Assertions.assertEquals(1, response.size());
-        Assertions.assertEquals(aluguelToDto(aluguel), response.getFirst());
+        Assertions.assertEquals(aluguelToDto(aluguel), response.get(0));
     }
 
     @Test
@@ -120,10 +120,10 @@ public class AluguelServiceUnitTest {
 
         List<AluguelDTO> response = aluguelService.listAllActiveOrInactive(true);
         Assertions.assertNotNull(response);
-        Assertions.assertEquals(aluguelToDto(activeAluguel), response.getFirst());
+        Assertions.assertEquals(aluguelToDto(activeAluguel), response.get(0));
 
         Assertions.assertEquals(1, response.size());
-        Assertions.assertNull(response.getFirst().getHorarioDevolucao());
+        Assertions.assertNull(response.get(0).getHorarioDevolucao());
     }
 
     @Test
@@ -132,9 +132,9 @@ public class AluguelServiceUnitTest {
 
         List<AluguelDTO> response = aluguelService.listAllActiveOrInactive(false);
         Assertions.assertNotNull(response);
-        Assertions.assertEquals(aluguelToDto(aluguel), response.getFirst());
+        Assertions.assertEquals(aluguelToDto(aluguel), response.get(0));
         Assertions.assertEquals(1, response.size());
-        Assertions.assertNotNull(response.getFirst().getHorarioDevolucao());
+        Assertions.assertNotNull(response.get(0).getHorarioDevolucao());
     }
 
     @Test

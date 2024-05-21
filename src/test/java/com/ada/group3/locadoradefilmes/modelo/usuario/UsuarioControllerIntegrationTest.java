@@ -31,17 +31,12 @@ public class UsuarioControllerIntegrationTest {
     private MockMvc mockMvc;
     @SpyBean
     private UsuarioService service;
-    @SpyBean
-    private EmailValidationService emailValidationService;
+
 
 
     @Test
     @Order(1)
     public void criarUsuario_DeveTerSucesso() throws Exception {
-        EmailValidationResponse validationResponse = new EmailValidationResponse();
-        validationResponse.setMx_found(true);
-        validationResponse.setFormat_valid(true);
-        Mockito.doReturn(validationResponse).when(emailValidationService).validarEmail(Mockito.any(), Mockito.any());
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/v1/usuarios")
                                 .content("""
