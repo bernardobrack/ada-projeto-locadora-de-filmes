@@ -58,8 +58,7 @@ public class AluguelControllerIntegrationTest {
     @SpyBean
     private FilmeRealService filmeRealService;
 
-    @MockBean
-    private EmailValidationService emailValidationService;
+
 
     private static AluguelDTO aluguel;
     public static UUID filmeConceitoUuid;

@@ -49,7 +49,7 @@ public class UsuarioService {
         if (!response.isFormat_valid() || !response.isMx_found()) {
             throw new EmailInvalidoException("E-mail inválido");
         }
-        if(usuarioRepository.findByUsername(usuarioRequest.getUsername()).isPresent()){
+        if (usuarioRepository.findByUsername(usuarioRequest.getUsername()).isPresent()) {
             throw new UsuarioJaExisteException();
         }
 
@@ -64,7 +64,7 @@ public class UsuarioService {
 
     public void atualizar(String username, UsuarioUpdateRequest request) {
         Usuario usuarioFound = usuarioRepository.findByUsername(username).orElseThrow(UsuarioNaoEncontradoException::new);
-        if(usuarioRepository.findByUsername(request.getUsername()).isPresent()){
+        if (usuarioRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new UsuarioJaExisteException();
         }
         usuarioFound.setUsername(request.getUsername());
