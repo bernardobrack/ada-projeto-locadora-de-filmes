@@ -9,6 +9,7 @@ import com.ada.group3.locadoradefilmes.modelo.usuario.UsuarioService;
 import com.ada.group3.locadoradefilmes.security.DataBaseAuthConfig;
 import com.ada.group3.locadoradefilmes.security.PasswordEncoderConfig;
 import com.ada.group3.locadoradefilmes.security.WebSecurityConfig;
+import com.jayway.jsonpath.JsonPath;
 import jakarta.annotation.PostConstruct;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,7 +61,7 @@ public class AluguelControllerIntegrationTest {
     @MockBean
     private EmailValidationService emailValidationService;
 
-    private Aluguel aluguel;
+    private static AluguelDTO aluguel;
     public static UUID filmeConceitoUuid;
     public static UUID filmeRealUuid;
     public static String usuarioUsername;
@@ -348,7 +349,7 @@ public class AluguelControllerIntegrationTest {
     @Order(19)
     @WithMockUser(roles = "CLIENTE", username = "test-username")
     public void save_whenSuccessful_mustReturn201AndAluguelDto() throws Exception {
-        mockMvc.perform(
+        MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/alugueis")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -365,9 +366,20 @@ public class AluguelControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.uuid").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.horarioAluguel").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.usuarioLogin").value(usuarioUsername))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.filmeUuid").value(filmeRealUuid.toString()));
-
-
+                .andExpect(MockMvcResultMatchers.jsonPath("$.filmeUuid").value(filmeRealUuid.toString()))
+                .andReturn();
+        String jsonResponse = result.getResponse().getContentAsString();
+        UUID uuid = UUID.fromString(JsonPath.read(jsonResponse, "$.uuid"));
+        LocalDateTime horarioAluguel = LocalDateTime.parse(JsonPath.read(jsonResponse, "$.horarioAluguel"));
+        String usuarioLogin = JsonPath.read(jsonResponse, "$.usuarioLogin");
+        UUID filmeUuid = UUID.fromString(JsonPath.read(jsonResponse, "$.filmeUuid"));
+        aluguel = new AluguelDTO(
+                uuid,
+                horarioAluguel,
+                null,
+                usuarioLogin,
+                filmeUuid
+        );
     }
 
     @Test
@@ -383,6 +395,72 @@ public class AluguelControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].usuarioLogin").value(usuarioUsername))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].filmeUuid").value(filmeRealUuid.toString()));
+    }
+
+    @Test
+    @Order(21)
+    @WithMockUser(roles = "CLIENTE", username = "test-username")
+    public void listAllActive_whenThereIsActive_mustReturnOnlyActiveDtos() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/v1/alugueis?active=true")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                ).andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].usuarioLogin").value(usuarioUsername))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].filmeUuid").value(filmeRealUuid.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].horarioDevolucao").doesNotExist());
+    }
+
+    @Test
+    @Order(22)
+    @WithMockUser(roles = "CLIENTE", username = "test-username")
+    public void listAllInactive_whenThereAreNoInactive_mustReturnOnlyInactiveDtos() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/v1/alugueis?active=false")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                ).andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    @Order(23)
+    @WithMockUser(roles = "CLIENTE", username = "test-username")
+    public void findById_whenThereIsCorrespondingId_mustReturnAluguelDTO() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/v1/alugueis/%s".formatted(aluguel.getUuid().toString()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.uuid").value(aluguel.getUuid().toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.usuarioLogin").value(aluguel.getUsuarioLogin()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.filmeUuid").value(aluguel.getFilmeUuid().toString()));
+    }
+
+    @Test
+    @Order(24)
+    @WithMockUser(roles = "CLIENTE", username = "test-username")
+    public void update_whenExistsCorrespondingAluguel_mustReturnItWithNewHorarioDevolucao() throws Exception {
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.patch("/api/v1/alugueis/%s".formatted(aluguel.getUuid().toString()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.uuid").value(aluguel.getUuid().toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.usuarioLogin").value(aluguel.getUsuarioLogin()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.filmeUuid").value(aluguel.getFilmeUuid().toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.horarioDevolucao").isString())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.horarioAluguel").isString())
+                .andReturn();
+
+        aluguel.setHorarioDevolucao(
+                LocalDateTime.parse(JsonPath.read(result.getResponse().getContentAsString(), "$.horarioDevolucao"))
+        );
     }
 
 }
