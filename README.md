@@ -1,4 +1,6 @@
-# Projeto Locadora de Filmes
+# Projeto Locadora de Filmes  
+
+Link do repositorio de teste de API ----> https://github.com/KauanJasiskis/testApiLocadora
 
 Este é um projeto de uma Locadora de Filmes desenvolvido utilizando Spring Boot. O objetivo é criar um sistema de gestão de filmes onde os usuários podem visualizar o catálogo de filmes disponíveis, alugar filmes e gerenciar sua conta.
 
