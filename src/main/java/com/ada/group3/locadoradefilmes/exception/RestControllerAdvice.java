@@ -2,8 +2,10 @@ package com.ada.group3.locadoradefilmes.exception;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -68,6 +70,7 @@ public class RestControllerAdvice extends ResponseEntityExceptionHandler {
         log.debug(ex.getMessage(), ex);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> accessDeniedExceptionHandler(Exception ex) {
         final ErrorResponse errorResponse =
@@ -80,13 +83,6 @@ public class RestControllerAdvice extends ResponseEntityExceptionHandler {
         final ErrorResponse errorResponse =
                 new ErrorResponse(ex.getClass(), HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(LoginInvalidoException.class)
-    public ResponseEntity<ErrorResponse> loginInvalidoExceptionHandler(LoginInvalidoException ex) {
-        final ErrorResponse errorResponse = new ErrorResponse(ex.getClass(), HttpStatus.UNAUTHORIZED, ex.getMessage());
-        log.debug(ex.getMessage(), ex);
-        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
 

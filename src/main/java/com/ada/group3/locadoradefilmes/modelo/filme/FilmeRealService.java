@@ -1,7 +1,6 @@
 package com.ada.group3.locadoradefilmes.modelo.filme;
 
 import com.ada.group3.locadoradefilmes.exception.FilmeConceitoNaoEncontradoException;
-import com.ada.group3.locadoradefilmes.exception.NaoEncontradoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
